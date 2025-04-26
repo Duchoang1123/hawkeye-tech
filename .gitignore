@@ -1,0 +1,14 @@
+backend/__pycache__
+backend/_pycache_
+backend/build
+backend/dist
+backend/venv
+backend/backend.egg-info
+
+frontend/node_modules
+frontend/build
+frontend/coverage
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
