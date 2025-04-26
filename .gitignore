@@ -3,6 +3,7 @@ backend/_pycache_
 backend/build
 backend/dist
 backend/venv
+backend/videos
 backend/backend.egg-info
 
 frontend/node_modules
