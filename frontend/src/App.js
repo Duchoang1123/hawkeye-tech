@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Chart from "chart.js/auto";
-
+import { format } from "date-fns";
 export default function App() {
   const [view, setView] = useState("table");   // "table" or "histogram"
   const [data, setData] = useState([]);        // [{ ts, persons: [...] }, ...]
@@ -45,7 +45,7 @@ export default function App() {
         try {
           const entry = JSON.parse(e.data);
           console.log("📨 Received data:", entry);
-          setData(prevData => [...prevData, entry].slice(-100));
+          setData(prevData => [entry, ...prevData]);
         } catch (error) {
           console.error("Error parsing message:", error);
         }
@@ -97,6 +97,17 @@ export default function App() {
     return () => chartRef.current?.destroy();
   }, []);
 
+  const totalPersons = useMemo(() => {
+    if (data.length === 0) return 0;
+    const personsSet = new Set(); 
+    const dataArray = data[2]?.persons;
+
+    console.log(dataArray);
+    
+    dataArray?.forEach(p => personsSet.add(p?.id));
+    return personsSet.size;
+  }, [data]);
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Real-Time Person Detection</h2>
@@ -135,11 +146,18 @@ export default function App() {
         </label>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div style={{ padding: '2px 0', position: 'sticky', top: 0, right: 0, width: '100%', backgroundColor: 'white', border: '1px solid black' }}>
+        <p>
+          Persons: {totalPersons}
+        </p>
+      </div>
+
+      <div>
         {view === "table" ? (
           <table border="1" cellPadding="4" style={{ width: "100%" }}>
             <thead>
               <tr>
+                <th>Index</th>
                 <th>Time</th>
                 <th>Person ID</th>
                 <th>Coordinates</th>
@@ -147,10 +165,11 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              {data.flatMap(entry =>
-                (entry.persons || []).map(p => (
-                  <tr key={`${entry.ts}-${p.id}`}>
-                    <td>{new Date(entry.ts * 1000).toLocaleTimeString()}</td>
+              {data.flatMap((entry, index) =>
+                (entry.persons || []).map((p) => (
+                  <tr key={`${entry.ts}-${p.id}-${p.conf}`}>
+                    <td>{entry.id}</td>
+                    <td>{format(entry.ts * 1000, "HH:mm:ss.SSS")}</td>
                     <td>{p.id}</td>
                     <td>[{p.bbox.join(", ")}]</td>
                     <td>{p.conf.toFixed(2)}</td>

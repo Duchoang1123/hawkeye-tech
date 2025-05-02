@@ -124,6 +124,7 @@ async def inference_loop():
         raise RuntimeError("Cannot open webcam")
 
     print("📸 Webcam opened successfully")
+    counter = 0
     
     try:
         while True:
@@ -146,7 +147,8 @@ async def inference_loop():
                         "conf": float(conf)
                     })
 
-            entry = {"ts": time.time(), "persons": persons}
+            entry = {"id": counter, "ts": time.time(), "persons": persons}
+            counter += 1
 
             # buffer and broadcast
             frame_buffer.append(entry)
