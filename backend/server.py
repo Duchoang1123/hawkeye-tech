@@ -3,14 +3,16 @@ import time
 import asyncio
 from threading import Thread
 from collections import deque
+import random
+import colorsys
 
 import torch
 import cv2
 from ultralytics import YOLO
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from utils.generate_random_color import generate_random_color
+ 
 # ——— Configuration ———
 CAMERA_INDEX = 0            # default webcam index
 BUFFER_SIZE  = 100         # keep last 100 frames
@@ -30,6 +32,11 @@ clients = set()
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"🔧 Using device: {device}")
 model = YOLO("yolov8n.pt").to(device)
+
+# Dictionary to store track IDs and their colors
+track_colors = {}
+
+
 
 # CORS: allow all origins during development
 app.add_middleware(
@@ -77,7 +84,7 @@ async def ws_endpoint(ws: WebSocket):
         for entry in frame_buffer:
             await ws.send_json(entry)
         print(f"✅ Sent {buffer_size} frames successfully")
-
+ 
         # Keep connection alive
         while True:
             try:
@@ -133,18 +140,32 @@ async def inference_loop():
                 print("⚠️ Failed to read frame")
                 break
 
-            # YOLOv8 detection
-            results = model(frame)[0]
+            # YOLOv8 tracking with ByteTrack
+            results = model.track(
+                frame,
+                persist=True,  # Enable tracking persistence
+                tracker="bytetrack.yaml",  # Use ByteTrack tracker
+                classes=[0],  # Only track person class (COCO class 0)
+                verbose=False
+            )[0]
 
-            # filter for person class (COCO class 0) and enumerate
+            # Process tracking results
             persons = []
-            for det in results.boxes.data.tolist():
-                x1, y1, x2, y2, conf, cls = det
-                if int(cls) == 0:
+            if results.boxes.id is not None:  # Check if tracking IDs are available
+                for box, track_id in zip(results.boxes.data.tolist(), results.boxes.id.tolist()):
+                    # Unpack the box data correctly
+                    x1, y1, x2, y2, conf, cls = box[:6]  # Take only first 6 values
+                    track_id = int(track_id)
+                    
+                    # Generate or retrieve color for this track ID
+                    if track_id not in track_colors:
+                        track_colors[track_id] = generate_random_color()
+                    
                     persons.append({
-                        "id": len(persons),
+                        "id": track_id,
                         "bbox": [int(x1), int(y1), int(x2), int(y2)],
-                        "conf": float(conf)
+                        "conf": float(conf),
+                        "color": track_colors[track_id]
                     })
 
             entry = {"id": counter, "ts": time.time(), "persons": persons}
@@ -158,9 +179,10 @@ async def inference_loop():
             await asyncio.sleep(0.1)
     except Exception as e:
         print(f"⚠️ Inference loop error: {str(e)}")
+        print("Debug info:", results.boxes.data.tolist() if 'results' in locals() else "No results available")
     finally:
         cap.release()
-        print("🎥 Camera released")
+        print("�� Camera released")
 
 @app.on_event("startup")
 async def startup_event():

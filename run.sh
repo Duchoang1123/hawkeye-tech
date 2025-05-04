@@ -13,14 +13,21 @@ trap cleanup SIGINT SIGTERM
 # Activate Python virtual environment and start backend server
 echo "Starting backend server..."
 cd ./backend
-source venv/Scripts/activate
+
+# Check if running on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    source venv/bin/activate
+else
+    source venv/Scripts/activate
+fi
+
 python server.py &
 BACKEND_PID=$!
 
 # Start frontend application
 echo "Starting frontend application..."
 cd ../frontend
-npm run start &
+yarn dev &
 FRONTEND_PID=$!
 
 # Wait for both processes
