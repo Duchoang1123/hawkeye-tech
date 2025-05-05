@@ -3,19 +3,29 @@ import cv2
 import os
 
 class ViewTransformer():
-    def __init__(self):
+    def __init__(self, vertical=True):
         court_width = 9
         court_length = 18
         
-        self.target_vertices = np.array([
-            [0, 0],
-            [0, court_width],
-            [court_length, court_width],
-            [court_length, 0]
-        ])
+        # Create target vertices based on vertical parameter
+        if vertical:
+            self.target_vertices = np.array([
+                [0, 0],
+                [court_width, 0],
+                [court_width, court_length],
+                [0, court_length]
+            ])
+        else:
+            self.target_vertices = np.array([
+                [0, 0],
+                [0, court_width],
+                [court_length, court_width],
+                [court_length, 0]
+            ])
 
         self.target_vertices = self.target_vertices.astype(np.float32)
         self.perspective_transformer = None
+        self.vertical = vertical
 
     def calibrate(self, video_name, frame_number=0):
         """
@@ -89,18 +99,19 @@ class ViewTransformer():
         
         print("Calibration completed successfully!")
 
-    def transform_point(self,point):
+    def transform_point(self, point, extrapolation=True):
         if not hasattr(self, 'pixel_vertices') or self.perspective_transformer is None:
             return None
             
-        p = (int(point[0]),int(point[1]))
-        is_inside = cv2.pointPolygonTest(self.pixel_vertices,p,False) >= 0 
-        if not is_inside:
+        p = (int(point[0]), int(point[1]))
+        is_inside = cv2.pointPolygonTest(self.pixel_vertices, p, False) >= 0
+        if not is_inside and not extrapolation:
             return None
 
         reshaped_point = point.reshape(-1,1,2).astype(np.float32)
-        tranform_point = cv2.perspectiveTransform(reshaped_point,self.perspective_transformer)
-        return tranform_point.reshape(-1,2)
+        transformed_point = cv2.perspectiveTransform(reshaped_point, self.perspective_transformer)
+        
+        return transformed_point.reshape(-1,2)
 
     def add_transformed_position_to_tracks(self,tracks):
         for object, object_tracks in tracks.items():
