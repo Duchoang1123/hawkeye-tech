@@ -4,7 +4,7 @@ import os
 import json
 
 class ViewTransformer():
-    def __init__(self, vertical=True):
+    def __init__(self, vertical=True, video_name=None):
         # standardization
         court_width = 1
         court_length = 2
@@ -28,6 +28,34 @@ class ViewTransformer():
         self.target_vertices = self.target_vertices.astype(np.float32)
         self.perspective_transformer = None
         self.vertical = vertical
+        
+        # Load calibration data if video_name is provided
+        if video_name is not None:
+            self.load_calibration_data(video_name)
+
+    def load_calibration_data(self, video_name):
+        """Load calibration data from a JSON file"""
+        # Create filename from video name
+        base_name = os.path.splitext(video_name)[0]
+        json_path = os.path.join(os.path.dirname(__file__), 'calibration', f"{base_name}.json")
+        
+        if not os.path.exists(json_path):
+            print(f"No calibration data found for {video_name}")
+            return False
+        
+        try:
+            with open(json_path, 'r') as f:
+                calibration_data = json.load(f)
+            
+            self.pixel_vertices = np.array(calibration_data['pixel_vertices'], dtype=np.float32)
+            self.perspective_transformer = np.array(calibration_data['perspective_transformer'], dtype=np.float32)
+            self.vertical = calibration_data['vertical']
+            
+            print(f"Calibration data loaded from {json_path}")
+            return True
+        except Exception as e:
+            print(f"Error loading calibration data: {e}")
+            return False
 
     def save_calibration_data(self, video_name, pixel_vertices, perspective_transformer):
         """Save calibration data to a JSON file"""

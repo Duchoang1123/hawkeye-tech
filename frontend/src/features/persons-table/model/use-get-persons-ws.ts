@@ -5,6 +5,7 @@ interface Person {
   color: [number, number, number]
   bbox: [number, number, number, number]
   conf: number
+  transformed_leg_coordinates: [number, number]
 }
 
 interface DataEntry {
