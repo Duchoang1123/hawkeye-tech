@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils.generate_random_color import generate_random_color
  
 # ——— Configuration ———
-CAMERA_INDEX = 0            # default webcam index
+CAMERA_INDEX = "videos/test.mp4"            # default webcam index
 BUFFER_SIZE  = 100         # keep last 100 frames
 PORT         = 8000
 # Always use 0.0.0.0 for development to ensure WebSocket works

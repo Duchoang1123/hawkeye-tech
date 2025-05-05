@@ -1,11 +1,13 @@
 import numpy as np 
 import cv2
 import os
+import json
 
 class ViewTransformer():
     def __init__(self, vertical=True):
-        court_width = 9
-        court_length = 18
+        # standardization
+        court_width = 1
+        court_length = 2
         
         # Create target vertices based on vertical parameter
         if vertical:
@@ -26,6 +28,29 @@ class ViewTransformer():
         self.target_vertices = self.target_vertices.astype(np.float32)
         self.perspective_transformer = None
         self.vertical = vertical
+
+    def save_calibration_data(self, video_name, pixel_vertices, perspective_transformer):
+        """Save calibration data to a JSON file"""
+        # Create calibration directory if it doesn't exist
+        calibration_dir = os.path.join(os.path.dirname(__file__), 'calibration')
+        os.makedirs(calibration_dir, exist_ok=True)
+        
+        # Create filename from video name
+        base_name = os.path.splitext(video_name)[0]
+        json_path = os.path.join(calibration_dir, f"{base_name}.json")
+        
+        # Prepare data for saving
+        calibration_data = {
+            "pixel_vertices": pixel_vertices.tolist(),
+            "perspective_transformer": perspective_transformer.tolist(),
+            "vertical": self.vertical
+        }
+        
+        # Save to JSON file
+        with open(json_path, 'w') as f:
+            json.dump(calibration_data, f, indent=4)
+        
+        print(f"Calibration data saved to {json_path}")
 
     def calibrate(self, video_name, frame_number=0):
         """
@@ -96,6 +121,9 @@ class ViewTransformer():
         
         # Calculate the perspective transform
         self.perspective_transformer = cv2.getPerspectiveTransform(self.pixel_vertices, self.target_vertices)
+        
+        # Save calibration data
+        self.save_calibration_data(video_name, self.pixel_vertices, self.perspective_transformer)
         
         print("Calibration completed successfully!")
 
