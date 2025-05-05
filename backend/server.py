@@ -149,7 +149,23 @@ async def inference_loop():
                 verbose=False
             )[0]
 
-            # Process tracking results
+            # ball = {}
+
+            # generate ball results
+            # ballResults = model2.track(
+            #     frame,
+            #     persist=True,  # Enable tracking persistence
+            #     tracker="bytetrack.yaml",  # Use ByteTrack tracker
+            #     classes=[0],  # Only track person class (COCO class 0)
+            #     verbose=False
+            # )[0]
+
+
+            # process ball results
+
+
+
+            # Process people results
             persons = []
             if results.boxes.id is not None:  # Check if tracking IDs are available
                 for box, track_id in zip(results.boxes.data.tolist(), results.boxes.id.tolist()):
@@ -168,10 +184,11 @@ async def inference_loop():
                         "color": track_colors[track_id]
                     })
 
-            entry = {"id": counter, "ts": time.time(), "persons": persons}
+            # save results to the entry
+            entry = {"id": counter, "ts": time.time(), "persons": persons }
             counter += 1
 
-            # buffer and broadcast
+            # buffer and broadcast entry
             frame_buffer.append(entry)
             await broadcast(entry)
 
