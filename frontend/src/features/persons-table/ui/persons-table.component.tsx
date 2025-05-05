@@ -18,6 +18,7 @@ interface Person {
   color: [number, number, number]
   bbox: [number, number, number, number]
   conf: number
+  transformed_leg_coordinates: [number, number]
 }
 
 interface DataEntry {
@@ -70,6 +71,7 @@ export const PersonsTable = () => {
               <Table.Th>Person ID</Table.Th>
               <Table.Th>Color</Table.Th>
               <Table.Th>Coordinates</Table.Th>
+              <Table.Th>Transformed Coordinates</Table.Th>
               <Table.Th>Confidence</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -91,7 +93,8 @@ export const PersonsTable = () => {
                     />
                   </Table.Td>
                   <Table.Td>[{p.bbox.join(', ')}]</Table.Td>
-                  <Table.Td>{p.conf.toFixed(2)}</Table.Td>
+                  <Table.Td>[{p.transformed_leg_coordinates.join(', ')}]</Table.Td>
+                  <Table.Td>{p.conf.toFixed(2)}</Table.Td>                  
                 </Table.Tr>
               ))
             )}

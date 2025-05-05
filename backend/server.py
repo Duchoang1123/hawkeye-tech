@@ -5,6 +5,7 @@ from threading import Thread
 from collections import deque
 import random
 import colorsys
+import numpy as np
 
 import torch
 import cv2
@@ -12,9 +13,21 @@ from ultralytics import YOLO
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from utils.generate_random_color import generate_random_color
+
+from utils.perspective_transformation import ViewTransformer
+import json
  
 # ——— Configuration ———
-CAMERA_INDEX = 0            # default webcam index
+CAMERA_INDEX = "videos/test.mp4"            # default webcam index
+
+# Load calibration data
+with open('utils/perspective_transformation/calibration/test.json', 'r') as f:
+    calibration_data = json.load(f)
+
+# Initialize view transformer
+view_transformer = ViewTransformer(video_name='test.mp4')
+
+
 BUFFER_SIZE  = 100         # keep last 100 frames
 PORT         = 8000
 # Always use 0.0.0.0 for development to ensure WebSocket works
@@ -177,9 +190,16 @@ async def inference_loop():
                     if track_id not in track_colors:
                         track_colors[track_id] = generate_random_color()
                     
+                    # leg coordinates
+                    leg_coordinates = np.array([(x1+x2)/2, y2], dtype=np.float32)
+                    transformed_leg_coordinates = view_transformer.transform_point(leg_coordinates)
+                    if transformed_leg_coordinates is not None:
+                        transformed_leg_coordinates = transformed_leg_coordinates.tolist()
+
                     persons.append({
                         "id": track_id,
                         "bbox": [int(x1), int(y1), int(x2), int(y2)],
+                        "transformed_leg_coordinates": transformed_leg_coordinates,
                         "conf": float(conf),
                         "color": track_colors[track_id]
                     })
@@ -199,7 +219,7 @@ async def inference_loop():
         print("Debug info:", results.boxes.data.tolist() if 'results' in locals() else "No results available")
     finally:
         cap.release()
-        print("�� Camera released")
+        print("🎥 Camera released")
 
 @app.on_event("startup")
 async def startup_event():
