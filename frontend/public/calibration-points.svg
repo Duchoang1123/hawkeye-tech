@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" viewBox="0 0 1920 1080"
+  xmlns="http://www.w3.org/2000/svg">
+  <!-- Black background -->
+  <rect width="1920" height="1080" fill="black"/>
+
+  <!-- Calibration points -->
+  <circle cx="687" cy="502" r="10" fill="white"/>
+  <circle cx="1168" cy="502" r="10" fill="white"/>
+  <circle cx="1743" cy="1076" r="10" fill="white"/>
+  <circle cx="209" cy="1070" r="10" fill="white"/>
+</svg> 

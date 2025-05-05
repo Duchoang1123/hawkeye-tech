@@ -1,17 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
 
-interface Person {
+interface Player {
   id: string
   color: [number, number, number]
   bbox: [number, number, number, number]
   conf: number
-  transformed_leg_coordinates: [number, number]
+  transformed_leg_coordinates: [[number, number]]
+  leg_coordinates: [number, number]
 }
 
 interface DataEntry {
   id: string
   ts: number
-  persons: Person[]
+  persons: Player[]
 }
 
 type WebSocketStatus = 'connected' | 'disconnected' | 'error'

@@ -1,0 +1,14 @@
+version: 3
+
+agent:
+  authtoken: 2AZGY4mhwNuPVqH48pnZqwuph5y_7Xkbcu14UhaptH4bMu9tW
+
+endpoints:
+  - name: frontend
+    upstream:
+      url: 3000
+
+  - name: backend
+    url: https://osprey-right-husky.ngrok-free.app
+    upstream: 
+      url: 8000
