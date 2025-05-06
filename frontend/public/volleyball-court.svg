@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="600" viewBox="0 0 1200 600"
+  xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="600" fill="transparent"/>
+
+  <!-- Court outline (18m x 9m scaled to fit) -->
+  <rect x="150" y="100" width="900" height="400" fill="#E8D0A9" stroke="#C0A080" stroke-width="3"/>
+
+  <!-- Center line -->
+  <line x1="600" y1="100" x2="600" y2="500" stroke="#C0A080" stroke-width="3"/>
+
+  <!-- Attack lines (3m from center line) -->
+  <line x1="400" y1="100" x2="400" y2="500" stroke="#C0A080" stroke-width="3"/>
+  <line x1="800" y1="100" x2="800" y2="500" stroke="#C0A080" stroke-width="3"/>
+
+  <!-- Service zones (9m x 9m) -->
+  <rect x="150" y="100" width="450" height="400" fill="none" stroke="#C0A080" stroke-width="2" stroke-dasharray="5,5"/>
+  <rect x="600" y="100" width="450" height="400" fill="none" stroke="#C0A080" stroke-width="2" stroke-dasharray="5,5"/>
+
+  <!-- Net (1m high) -->
+  <line x1="600" y1="100" x2="600" y2="150" stroke="#C0A080" stroke-width="4"/>
+
+  <!-- Net posts -->
+  <rect x="595" y="50" width="10" height="50" fill="#C0A080"/>
+  <rect x="595" y="500" width="10" height="50" fill="#C0A080"/>
+
+  <!-- Court markings -->
+  <!-- Front zone (3m from net) -->
+  <rect x="400" y="100" width="400" height="200" fill="none" stroke="#C0A080" stroke-width="1" stroke-dasharray="2,2"/>
+  <rect x="400" y="300" width="400" height="200" fill="none" stroke="#C0A080" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- Back zone (6m from net) -->
+  <rect x="150" y="100" width="250" height="400" fill="none" stroke="#C0A080" stroke-width="1" stroke-dasharray="2,2"/>
+  <rect x="800" y="100" width="250" height="400" fill="none" stroke="#C0A080" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- Free zone (3m around the court) -->
+  <rect x="50" y="50" width="1100" height="500" fill="none" stroke="#C0A080" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- Service area markers -->
+  <circle cx="300" cy="300" r="5" fill="#C0A080"/>
+  <circle cx="900" cy="300" r="5" fill="#C0A080"/>
+</svg>

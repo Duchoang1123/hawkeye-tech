@@ -1,13 +1,16 @@
-import { PersonsTable } from './features/persons-table/ui/persons-table.component'
-
-import { createTheme, MantineProvider } from '@mantine/core'
+import { Container, createTheme, MantineProvider } from '@mantine/core'
+import VolleyballCourt from './features/volleyball-court/ui/volleyball-court.component'
 
 const theme = createTheme({})
 
 function App() {
   return (
     <MantineProvider theme={theme}>
-      <PersonsTable />
+      <Container size='lg'>
+        <VolleyballCourt />
+
+        {/* <PersonsTable /> */}
+      </Container>
     </MantineProvider>
   )
 }

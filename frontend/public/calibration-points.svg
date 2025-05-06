@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" viewBox="0 0 1920 1080"
+  xmlns="http://www.w3.org/2000/svg">
+  <!-- Black background -->
+  <rect width="1920" height="1080" fill="#E8D0A9"/>
+
+  <!-- Calibration points -->
+  <circle cx="687" cy="502" r="10" fill="red"/>
+  <circle cx="1168" cy="502" r="10" fill="red"/>
+  <circle cx="1743" cy="1076" r="10" fill="red"/>
+  <circle cx="209" cy="1070" r="10" fill="red"/>
+
+  <!-- Connecting lines -->
+  <line x1="687" y1="502" x2="1168" y2="502" stroke="white" stroke-width="2"/>
+  <line x1="1168" y1="502" x2="1743" y2="1076" stroke="white" stroke-width="2"/>
+  <line x1="1743" y1="1076" x2="209" y2="1070" stroke="white" stroke-width="2"/>
+  <line x1="209" y1="1070" x2="687" y2="502" stroke="white" stroke-width="2"/>
+
+  <!-- Middle horizontal line -->
+  <line x1="209" y1="789" x2="1743" y2="789" stroke="white" stroke-width="2" stroke-dasharray="10,10"/>
+</svg> 

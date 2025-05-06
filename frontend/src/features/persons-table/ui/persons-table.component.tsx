@@ -63,43 +63,49 @@ export const PersonsTable = () => {
         <Text fw={500}>Unique Persons Tracked: {totalPersons}</Text>
       </Paper>
       <Paper withBorder>
-        <Table striped>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Frame ID</Table.Th>
-              <Table.Th>Time</Table.Th>
-              <Table.Th>Person ID</Table.Th>
-              <Table.Th>Color</Table.Th>
-              <Table.Th>Coordinates</Table.Th>
-              <Table.Th>Transformed Coordinates</Table.Th>
-              <Table.Th>Confidence</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {data.flatMap((entry: DataEntry) =>
-              (entry.persons || []).map((p: Person) => (
-                <Table.Tr key={`${entry.ts}-${p.id}-${p.conf}`}>
-                  <Table.Td>{entry.id}</Table.Td>
-                  <Table.Td>{format(entry.ts * 1000, 'HH:mm:ss.SSS')}</Table.Td>
-                  <Table.Td>{p.id}</Table.Td>
-                  <Table.Td>
-                    <Box
-                      w={20}
-                      h={20}
-                      style={(theme: MantineTheme) => ({
-                        backgroundColor: `rgb(${p.color.join(',')})`,
-                        border: `1px solid ${theme.colors.gray[3]}`,
-                      })}
-                    />
-                  </Table.Td>
-                  <Table.Td>[{p.bbox.join(', ')}]</Table.Td>
-                  <Table.Td>[{p.transformed_leg_coordinates.join(', ')}]</Table.Td>
-                  <Table.Td>{p.conf.toFixed(2)}</Table.Td>                  
-                </Table.Tr>
-              ))
-            )}
-          </Table.Tbody>
-        </Table>
+        <div style={{ overflowX: 'auto' }}>
+          <Table striped>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Frame ID</Table.Th>
+                <Table.Th>Time</Table.Th>
+                <Table.Th>Person ID</Table.Th>
+                <Table.Th>Color</Table.Th>
+                <Table.Th>Coordinates</Table.Th>
+                <Table.Th>Transformed Coordinates</Table.Th>
+                <Table.Th>Confidence</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {data.flatMap((entry: DataEntry) =>
+                (entry.persons || []).map((p: Person) => (
+                  <Table.Tr key={`${entry.ts}-${p.id}-${p.conf}-${entry.id}`}>
+                    <Table.Td>{entry.id}</Table.Td>
+                    <Table.Td>
+                      {format(entry.ts * 1000, 'HH:mm:ss.SSS')}
+                    </Table.Td>
+                    <Table.Td>{p.id}</Table.Td>
+                    <Table.Td>
+                      <Box
+                        w={20}
+                        h={20}
+                        style={(theme: MantineTheme) => ({
+                          backgroundColor: `rgb(${p.color.join(',')})`,
+                          border: `1px solid ${theme.colors.gray[3]}`,
+                        })}
+                      />
+                    </Table.Td>
+                    <Table.Td>[{p.bbox.join(', ')}]</Table.Td>
+                    <Table.Td>
+                      [{p.transformed_leg_coordinates.join(', ')}]
+                    </Table.Td>
+                    <Table.Td>{p.conf.toFixed(2)}</Table.Td>
+                  </Table.Tr>
+                ))
+              )}
+            </Table.Tbody>
+          </Table>
+        </div>
       </Paper>
     </Stack>
   )
