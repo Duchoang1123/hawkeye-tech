@@ -1,18 +1,5 @@
 import { create } from 'zustand'
-
-interface Position {
-  x: number
-  y: number
-  timestamp: number
-}
-
-export interface Player {
-  id: string
-  color: string
-  positions: Position[]
-  transformed_leg_coordinates: [number, number]
-  leg_coordinates: Position[]
-}
+import { Player } from './player.entity'
 
 interface PlayerState {
   players: Record<string, Player>
