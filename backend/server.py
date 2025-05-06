@@ -43,7 +43,11 @@ clients = set()
 
 # Load YOLOv8 on GPU if available
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"🔧 Using device: {device}")
+if device == "cuda":
+    print(f"🔧 Using CUDA device: {torch.cuda.get_device_name(0)}")
+    print(f"🔧 CUDA version: {torch.version.cuda}")
+else:
+    print(f"🔧 Using CPU (CUDA not available)")
 model = YOLO("yolov8n.pt").to(device)
 
 # Dictionary to store track IDs and their colors
@@ -138,6 +142,7 @@ async def broadcast(entry: dict):
 
 # ——— Inference & Tracking Loop ———
 async def inference_loop():
+
     print("🎥 Starting inference loop...")
     cap = cv2.VideoCapture(CAMERA_INDEX)
     if not cap.isOpened():
